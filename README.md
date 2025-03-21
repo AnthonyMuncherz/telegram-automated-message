@@ -23,36 +23,49 @@ A Docker-based application that sends messages from your personal Telegram accou
 
 3. Edit the `.env` file with your Telegram API credentials, phone number, recipient, and custom message:
    ```
-   API_ID=12345
-   API_HASH=your_api_hash_here
-   PHONE_NUMBER=+12345678901
+   API_ID=12345                      # Must be a number, not a string
+   API_HASH=your_api_hash_here       # This is a string
+   PHONE_NUMBER=+12345678901         # Include the country code
    RECIPIENT=@username_or_phone_number
    MESSAGE=Your custom message text here
    ```
+
+   **Important**: The `API_ID` must be entered as a number without quotes. The `API_HASH` is a string.
 
 ### How to get Telegram API Credentials
 
 1. Visit [https://my.telegram.org/](https://my.telegram.org/) and log in with your phone number
 2. Click on "API Development Tools"
 3. Fill in the required fields (you can put "Telegram Scheduler" as the app name and any other necessary details)
-4. Submit the form to get your `API_ID` and `API_HASH`
+4. Submit the form to get your `API_ID` (a number) and `API_HASH` (a string)
+5. Copy these values exactly as shown to your `.env` file
 
-### First-Time Setup
+### Testing Your Setup
 
-The first time you run the application, you'll need to authorize your Telegram account:
+Before running the scheduler in the background, it's recommended to test your setup:
 
-1. Start the container in interactive mode:
+1. Make sure your `.env` file is properly configured with valid credentials
+2. Run the container in interactive mode:
    ```bash
    docker-compose run --rm telegram-scheduler
    ```
+3. If this is your first time, you'll be prompted to enter the verification code sent to your Telegram account
+4. If everything is set up correctly, you should see a "Message sent successfully" message in the logs
+5. Press Ctrl+C to exit the interactive session
 
-2. You will be prompted to enter the confirmation code that Telegram sends to your account
-3. Enter the code to complete the authorization process
-4. After successful authorization, a session file will be created that allows the application to send messages without requiring further authorization
+### Troubleshooting
+
+Common issues:
+
+- **"The api_id/api_hash combination is invalid"**: Double-check your API_ID and API_HASH values in the .env file. Make sure API_ID is a number without quotes.
+- **Mount errors**: Make sure you've created the `.env` file before running the container.
+- **Authentication errors**: Ensure your phone number is in the correct format with country code.
 
 ## Usage
 
 ### Running with Docker Compose (recommended)
+
+Once you've successfully tested the setup, you can run it in the background:
 
 ```bash
 docker-compose up -d
@@ -67,7 +80,7 @@ This will:
 
 ```bash
 docker build -t telegram-scheduler .
-docker run -d --name telegram-scheduler --restart unless-stopped -v $(pwd)/.env:/app/.env -v $(pwd)/session:/app telegram-scheduler
+docker run -d --name telegram-scheduler --restart unless-stopped -v $(pwd)/.env:/app/.env -v $(pwd)/session:/app/session telegram-scheduler
 ```
 
 ## Logs
@@ -95,8 +108,8 @@ docker rm telegram-scheduler
 
 You can modify the following environment variables in the `.env` file:
 
-- `API_ID`: Your Telegram API ID (required)
-- `API_HASH`: Your Telegram API hash (required)
+- `API_ID`: Your Telegram API ID (required, must be a number)
+- `API_HASH`: Your Telegram API hash (required, a string)
 - `PHONE_NUMBER`: Your Telegram account phone number with country code (required)
 - `RECIPIENT`: The username, phone number, or chat ID of the recipient (required)
 - `MESSAGE`: The message to send (optional, default message will be used if not specified)

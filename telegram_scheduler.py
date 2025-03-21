@@ -38,7 +38,7 @@ if not RECIPIENT:
     exit(1)
 
 # Create a Telegram client session file path
-SESSION_FILE = "telegram_session"
+SESSION_FILE = os.path.join("session", "telegram_session")
 
 def send_message():
     """Send a message to the specified recipient using your personal Telegram account."""

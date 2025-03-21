@@ -10,8 +10,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY telegram_scheduler.py .
 COPY .env.example .env.example
 
-# Create volume for the .env file and session file
-VOLUME ["/app/data"]
+# Create session directory
+RUN mkdir -p /app/session
 
 # Set the entrypoint
 CMD ["python", "telegram_scheduler.py"] 
