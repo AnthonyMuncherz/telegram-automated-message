@@ -1,0 +1,14 @@
+version: '3'
+
+services:
+  telegram-scheduler:
+    build: .
+    container_name: telegram-scheduler
+    restart: unless-stopped
+    volumes:
+      - ./.env:/app/.env
+      - ./session:/app  # Mount the current directory to persist the session file
+    environment:
+      - TZ=UTC  # Set your preferred timezone here
+    stdin_open: true   # Keep STDIN open for interactive authentication
+    tty: true          # Allocate a pseudo-TTY for interactive authentication 
